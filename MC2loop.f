@@ -68,6 +68,7 @@ C PBC VECTOR
       PBC(0) = L
       PBC(L+1) = 1
 
+      CALL CPU_TIME(TIMI)
       CALL FDATE(DATE)
 
       OPEN(UNIT=13, FILE=NOM//".res")
@@ -98,8 +99,6 @@ C COUNTERS
       SUMM = 0.D0
       SUMM2 = 0.D0
       SUMAM = 0.D0
-
-      CALL CPU_TIME(TIMI)
 
 
       DO SEED = SEED0,SEED0+NSEED-1,1 !###########INICI BUCLE LLAVORS
