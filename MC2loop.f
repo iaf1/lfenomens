@@ -81,8 +81,7 @@ C W AND PBC VECTORS
       WRITE(13,*) "#MCS", MCTOT, MCINI, MCD
       WRITE(13,*) "#NOM", NOM
       WRITE(13,*) "##########################################"
-      WRITE(13,*) "#L","TEMP","SUM","SUME","SUME2","VARE",
-     +  "SUMM","SUMAM","SUMM2","VARM"
+      WRITE(13,*) "#L TEMP SUM SUME SUME2 VARE SUMM SUMAM SUMM2 VARM"
 
       DO ITEMP=0,NTEMP-1,1 !#####################INICI BUCLE TEMPERAT
       CALL CPU_TIME(TIM1)
