@@ -61,10 +61,7 @@ C INPUT VARIABLES
       WRITE(*,*) "NOM: ", NOM
 
 
-C W AND PBC VECTORS
-      DO I=-8,8 
-            W(I) = DEXP(-DBLE(I)/TEMP)
-      ENDDO
+C PBC VECTOR
       DO I=1,L
             PBC(I) = I
       ENDDO
@@ -74,19 +71,25 @@ C W AND PBC VECTORS
       CALL FDATE(DATE)
 
       OPEN(UNIT=13, FILE=NOM//".res")
-      WRITE(13,*) "#DATE", DATE
+      WRITE(13,*) "#DATE ", DATE
       WRITE(13,*) "#L", L, "N", N
       WRITE(13,*) "#TEMPS", TEMPI, TEMPF, TSTEP, NTEMP
       WRITE(13,*) "#SEEDS", SEED0, NSEED
       WRITE(13,*) "#MCS", MCTOT, MCINI, MCD
-      WRITE(13,*) "#NOM", NOM
+      WRITE(13,*) "#NOM ", NOM
       WRITE(13,*) "##########################################"
       WRITE(13,*) "#L TEMP SUM SUME SUME2 VARE SUMM SUMAM SUMM2 VARM"
+      PRINT*, "======================================"
 
       DO ITEMP=0,NTEMP-1,1 !#####################INICI BUCLE TEMPERAT
       CALL CPU_TIME(TIM1)
       TEMP = TEMPI+ITEMP*TSTEP
       WRITE(*,*) "TEMPERATURE = ", TEMP
+
+C W VECTOR
+      DO I=-8,8 
+            W(I) = DEXP(-DBLE(I)/TEMP)
+      ENDDO
 
 C COUNTERS
       SUM = 0.D0
