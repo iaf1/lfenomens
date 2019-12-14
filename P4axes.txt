@@ -1,0 +1,4 @@
+Last charts of P4 pwp:
+
+<|m|>L^(beta/nu) vs. L^(1/nu)*(T-Tc)/Tc
+X_L^(-gamma/nu) vs. L^(1/nu)*(T-Tc)/Tc

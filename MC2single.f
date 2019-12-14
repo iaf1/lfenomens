@@ -9,18 +9,18 @@ C     IVAN ALSINA FERRER
       PARAMETER(L=30)
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
-      INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
+      INTEGER*4 MCTOT, IMC, MCINI, MCD
       INTEGER*2 SIMTAG
-      REAL*8 GENRAND_REAL2, MAGNE
-      REAL*8 ENERG,ENEBIS
+      REAL*8 GENRAND_REAL2, MAGN(2), MAGNE
+      REAL*8 ENE2(2),ENERG,ENEBIS
       REAL*8 W(-8:8)
-      REAL*8 NHOOD, DELTA, TEMP, ENE, DE, MAG, TEMPI, TEMPF, TSTEP
+      REAL*8 NHOOD, DELTA, TEMP, ENE, DE, MAG
       REAL*8 SUM, SUME, SUME2, SUMM, SUMM2, SUMAM, VARE, VARM
-      CHARACTER*28 NOM
-      REAL*8 TIMI, TIMF, TIM1, TIM2
+      CHARACTER*18 NOM
+      REAL*8 TIMI, TIMF
       CHARACTER*30 DATE
 
-      NAMELIST /DADES/ NOM,TEMPI,NTEMP,TSTEP,NSEED,SEED0,MCTOT,MCINI,MCD
+      NAMELIST /DADES/ NOM, TEMP, NSEED, SEED0, MCTOT, MCINI, MCD
 
 C INPUT VARIABLES
 !      NOMS = (/
@@ -35,62 +35,39 @@ C INPUT VARIABLES
 
 !      NOM = "SIM-L-030-TEMP-4500-MCTOT-10K-01"
       NOM = "EMPTY"
-      TEMPI = 1.5D0
-      NTEMP = 12
-      TSTEP = 0.25D0
+      TEMP = 4.5D0
       !SEED = 3216548
-      NSEED = 1000
+      NSEED = 1000  
       SEED0 = 117654
       MCTOT = 10000
       MCINI = 1000
       MCD = 10
 
-      OPEN(12,FILE="MC2loop.dat")
+      !SIMTAG = 1
+      
+      OPEN(12,FILE="MC2.dat")
       READ(12,DADES,IOSTAT=IOS)
       CLOSE(12)
-      TEMPF = TEMPI+(NTEMP-1)*TSTEP
 
+      WRITE(NOM,200) "MC-L-", L, "-TEMP-", INT(TEMP*1000)
+ 200  FORMAT(A5,I0.3,A6,I4)
 
-      WRITE(NOM,200) "MC-L-", L, "-TEMP-", INT(TEMPI*1000), "-"
-     +  , INT(TEMPF*1000), "-", INT(TSTEP*1000)
- 200  FORMAT(A5,I0.3,A6,I4,A1,I4,A1,I0.4)
-
-      WRITE(*,*) "TEMPS: ", TEMPI, TEMPF, TSTEP, NTEMP
+      WRITE(*,*) "TEMP: ", TEMP
       WRITE(*,*) "SEEDS: ", SEED0, NSEED
-      WRITE(*,*) "MCS: ", MCTOT, MCINI, MCD
+      WRITE(*,*) "MC: ", MCTOT, MCINI, MCD
       WRITE(*,*) "NOM: ", NOM
 
 
-C PBC VECTOR
+C W AND PBC VECTORS
+      DO I=-8,8 
+            W(I) = DEXP(-DBLE(I)/TEMP)
+      ENDDO
       DO I=1,L
             PBC(I) = I
       ENDDO
       PBC(0) = L
       PBC(L+1) = 1
 
-      CALL CPU_TIME(TIMI)
-      CALL FDATE(DATE)
-
-      OPEN(UNIT=13, FILE=NOM//".res")
-      WRITE(13,*) "#DATE ", DATE
-      WRITE(13,*) "#L", L, "N", N
-      WRITE(13,*) "#TEMPS", TEMPI, TEMPF, TSTEP, NTEMP
-      WRITE(13,*) "#SEEDS", SEED0, NSEED
-      WRITE(13,*) "#MCS", MCTOT, MCINI, MCD
-      WRITE(13,*) "#NOM ", NOM
-      WRITE(13,*) "##########################################"
-      WRITE(13,*) "#L TEMP SUM SUME SUME2 VARE SUMM SUMAM SUMM2 VARM"
-      PRINT*, "======================================"
-
-      DO ITEMP=0,NTEMP-1,1 !#####################INICI BUCLE TEMPERAT
-      CALL CPU_TIME(TIM1)
-      TEMP = TEMPI+ITEMP*TSTEP
-      WRITE(*,*) "TEMPERATURE = ", TEMP
-
-C W VECTOR
-      DO I=-8,8 
-            W(I) = DEXP(-DBLE(I)/TEMP)
-      ENDDO
 
 C COUNTERS
       SUM = 0.D0
@@ -100,11 +77,18 @@ C COUNTERS
       SUMM2 = 0.D0
       SUMAM = 0.D0
 
+      CALL CPU_TIME(TIMI)
+
 
       DO SEED = SEED0,SEED0+NSEED-1,1 !###########INICI BUCLE LLAVORS
-      !WRITE(*,*) 'LLAVOR = ', SEED
+      WRITE(*,*) 'LLAVOR = ', SEED
 
       CALL INIT_GENRAND(SEED)
+
+!      DO ITEMP=1,5 !#############################INICI BUCLE TEMPS
+!      TEMP=TEMPS(ITEMP)
+!      NOM =NOMS(ITEMP)
+!      PRINT*, ITEMP, TEMP, NOM
 
 C INITIAL STATE (RANDOM)
       DO I=1,L
@@ -177,23 +161,17 @@ C INITIAL STATE (RANDOM)
       WRITE(*,*) "PROMIG MAGNET**2", SUMM2
       WRITE(*,*) "PROMIG ABS(MAGNE)", SUMAM
 
-      CALL CPU_TIME(TIM2)
-      WRITE(*,*) "TEMP CHRONO: ", TIM2-TIM1
-
       PRINT*, "======================================"
-      WRITE(13,*) L,TEMP,SUM,SUME,SUME2,VARE,SUMM,SUMAM,SUMM2,VARM
 
-
-
-      ENDDO !#######################################FI BUCLE TEMPERAT
-
-      CALL FDATE(DATE)
       CALL CPU_TIME(TIMF)
+      CALL FDATE(DATE)
 
       PRINT*, DATE
       PRINT*, "TOTAL CHRONO: ", TIMF-TIMI
 
 
+      OPEN(UNIT=13, FILE=NOM//".res")
+      WRITE(13,*) L,TEMP,SUM,SUME,SUME2,VARE,SUMM,SUMAM,SUMM2,VARM
       CLOSE(13)
 
       STOP
