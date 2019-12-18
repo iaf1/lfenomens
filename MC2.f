@@ -6,7 +6,7 @@ C     IVAN ALSINA FERRER
       INTEGER*4 I, J, K, L, N, ITEMP, IPAS
       INTEGER*4 NSEED, SEED0, SEED
       INTEGER IOS
-      PARAMETER(L=30)
+      PARAMETER(L=120)
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
       INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
@@ -45,7 +45,7 @@ C INPUT VARIABLES
       MCINI = 1000
       MCD = 10
 
-      OPEN(12,FILE="MC2loop.dat")
+      OPEN(12,FILE="MC2.dat")
       READ(12,DADES,IOSTAT=IOS)
       CLOSE(12)
       TEMPF = TEMPI+(NTEMP-1)*TSTEP
@@ -126,8 +126,11 @@ C INITIAL STATE (RANDOM)
 
       DO IMC=1,MCTOT !#############################INICI BUCLE MONTEC.
       DO IPAS=1,N !################################N PASSOS EN CADA IMC
-      I = INT(GENRAND_REAL2()*L)+1
-      J = INT(GENRAND_REAL2()*L)+1 !TO FURTHER OPTIMIZE
+      !I = INT(GENRAND_REAL2()*L)+1
+      !J = INT(GENRAND_REAL2()*L)+1 !TO FURTHER OPTIMIZE
+      K = INT(GENRAND_REAL2()*N)+1
+      I = MOD(K-1,L) + 1
+      J = (K-1)/L + 1
 
       NHOOD = S(I,PBC(J+1)) +S(I,PBC(J-1)) +S(PBC(I+1),J) +S(PBC(I-1),J)
       DE = 2*S(I,J)*NHOOD
@@ -192,6 +195,8 @@ C INITIAL STATE (RANDOM)
 
       PRINT*, DATE
       PRINT*, "TOTAL CHRONO: ", TIMF-TIMI
+      WRITE(13,*) "#DATE ", DATE
+      WRITE(13,*) "#TOTAL CHRONO: ", TIMF-TIMI
 
 
       CLOSE(13)

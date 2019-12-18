@@ -60,12 +60,12 @@ set output file."_cvn.png"
 
 x0 = NaN
 y0 = NaN
-dx = NaN
-dy = NaN
+#dx = NaN
+#dy = NaN
 
 plot \
-file u ($2):(($5-$4**2)/($2**2*$1**2)) t"C_V", \
-file u (dx=$2-x0,x0=$2,$2-dx/2):(dy=($4/$1)-y0,y0=($4/$1),dy/dx/$1**2) w l lt 1 lc 3 t"d<e>/dT"
+file u ($2):(($5-$4**2)/($2**2*$1**2)) t"c_V", \
+file u (dx=$2-x0,x0=$2,$2-dx/2):(dy=($4/$1**2)-y0,y0=($4/$1**2),dy/dx) w l lt 1 lc 3 t"d<e>/dT"
 
 
 set term wxt

@@ -45,7 +45,7 @@ C INPUT VARIABLES
 
       !SIMTAG = 1
       
-      OPEN(12,FILE="MC2.dat")
+      OPEN(12,FILE="MC2single.dat")
       READ(12,DADES,IOSTAT=IOS)
       CLOSE(12)
 
