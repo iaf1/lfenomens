@@ -8,7 +8,7 @@ C     IVAN ALSINA FERRER
       INTEGER IOS
       PARAMETER(L=7)
       INTEGER*4 PBC(0:L+1)
-      INTEGER*2 S(1:L,1:L)
+      INTEGER*4 S(1:L,1:L)
       INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
       INTEGER*2 SIMTAG
       REAL*8 GENRAND_REAL2, MAGNE
@@ -26,42 +26,45 @@ C INPUT VARIABLES
       
       N = L*L
 
-      NOM = "EMPTY"
-      TEMPI = 1.5D0
-      NTEMP = 1
-      TSTEP = 0.25D0
-      !SEED = 3216548
-      NSEED = 1000
       SEED0 = 117654
-      MCTOT = 10000
-      MCINI = 1000
-      MCD = 10
+      MCTOT = 40000
+
+      
 
 
 C INITIAL STATE (RANDOM)
       DO I=1,L
             DO J=1,L
-                  S(I,J) = 1
+                  S(I,J) = 0
             ENDDO
       ENDDO
 
+      CALL INIT_GENRAND(SEED0)
 
-      DO IMC=1,300 !#############################INICI BUCLE MONTEC.
+
+      DO IMC=1,MCTOT !#############################INICI BUCLE MONTEC.
       !I = INT(GENRAND_REAL2()*L)+1
       !J = INT(GENRAND_REAL2()*L)+1 !TO FURTHER OPTIMIZE
       K = INT(GENRAND_REAL2()*N)+1
       I = MOD(K-1,L) + 1
       J = (K-1)/L + 1
-      PRINT*, IMC, K, I, J
+      !PRINT*, IMC, K, I, J
 
-      S(I,J) = -1
+      S(I,J) = S(I,J) +1
       
       ENDDO !#######################################FI BUCLE MONTEC.
+
+      PRINT*, "CALL CONUTS:"
+      DO I=1,L
+            DO J=1,L
+                  PRINT*, I, J, S(I,J)
+            ENDDO
+      ENDDO
 
       PRINT*, "UNCALLED INDEXS:"
       DO I=1,L
             DO J=1,L
-                  IF (S(I,J).GT.0) THEN
+                  IF (S(I,J).EQ.0) THEN
                         PRINT*, I,J
                   ENDIF
             ENDDO

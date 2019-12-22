@@ -11,6 +11,7 @@ set xlabel "Reduced temperature T"
 # derivative functions.  Return 1/0 for first point, otherwise delta y or (delta y)/(delta x)
 #d(y) = ($0 == 0) ? (y1 = y, 1/0) : (y2 = y1, y1 = y, y1-y2)
 #d(y) = ($0 == 0) ? (x1 = x, y1 = y, 1/0) : (dx=$2-x1, x1=$2, $2-dx/2)
+displ(x) = ($0 == 0) ? (x0=x,1/0) : (dx=x-x0,x0=x,x-dx/2)
 der(x,y) = ($0 == 0) ? (x1=x,y1=y,1/0) : (x2=x1,x1=x,y2=y1,y1=y,(y1-y2)/(x1-x2))
 
 ############################################################################
@@ -59,12 +60,9 @@ set ylabel "Heat capacity at ct. V per part. (in k units)"
 set term png
 set output file."_cvn.png"
 
-x0 = NaN
-y0 = NaN
-
 plot \
 file u ($2):(($5-$4**2)/($2**2*$1**2)) t"c_V", \
-file u 2:(der($2,$4/$1**2)) w l lt 1 lc 3 t"d<e>/dT"
+file u (displ($2)):(der($2,$4/$1**2)) w l lt 1 lc 3 t"d<e>/dT"
 #file u (dx=$2-x0,x0=$2,$2-dx/2):(dy=($4/$1**2)-y0,y0=($4/$1**2),dy/dx) w l lt 1 lc 3 t"d<e>/dT"
 
 
