@@ -1,4 +1,9 @@
 C     IVAN ALSINA FERRER
+C     FENOMENS COL-LECTIUS I TRANSICIONS DE FASE
+C     PRACTICA D'ORDINADOR
+C     TARDOR 2019-20
+C     UNIVERSITAT DE BARCELONA. FACULTAT DE FISICA.
+C ####################################################################@
       
       PROGRAM MAIN
       IMPLICIT NONE
@@ -10,7 +15,6 @@ C     IVAN ALSINA FERRER
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
       INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
-      INTEGER*2 SIMTAG
       REAL*8 GENRAND_REAL2, MAGNE
       REAL*8 ENERG,ENEBIS
       REAL*8 W(-8:8)
@@ -20,41 +24,36 @@ C     IVAN ALSINA FERRER
       REAL*8 TIMI, TIMF, TIM1, TIM2
       CHARACTER*30 DATE
 
+C PARAMETERS VECTOR
       NAMELIST /DADES/ NOM,TEMPI,NTEMP,TSTEP,NSEED,SEED0,MCTOT,MCINI,MCD
-
-C INPUT VARIABLES
-!      NOMS = (/
-!     $ "SIM-L-030-TEMP-1500-MCTOT-10K-01",
-!     $ "SIM-L-030-TEMP-1800-MCTOT-10K-01",
-!     $ "SIM-L-030-TEMP-2500-MCTOT-10K-01",
-!     $ "SIM-L-030-TEMP-3500-MCTOT-10K-01",
-!     $ "SIM-L-030-TEMP-4500-MCTOT-10K-01"/)
-!      TEMPS = (/1.5D0, 1.8D0, 2.5D0, 3.5D0, 4.5D0/)
       
       N = L*L
 
-!      NOM = "SIM-L-030-TEMP-4500-MCTOT-10K-01"
+C DEFAULT PARAMETERS
       NOM = "EMPTY"
       TEMPI = 1.5D0
       NTEMP = 12
       TSTEP = 0.25D0
-      !SEED = 3216548
       NSEED = 1000
       SEED0 = 117654
       MCTOT = 10000
       MCINI = 1000
       MCD = 10
 
+C READ PARAMETERS FROM FILE
       OPEN(12,FILE="MC2.dat")
       READ(12,DADES,IOSTAT=IOS)
       CLOSE(12)
+
+C COMPUTE FINAL TEMPERATURE
       TEMPF = TEMPI+(NTEMP-1)*TSTEP
 
-
+C BUILD OUTPUT FILE NAME BASED ON L AND TEMPS (INITIAL, FINAL AND STEP)
       WRITE(NOM,200) "MC-L-", L, "-TEMP-", INT(TEMPI*1000), "-"
      +  , INT(TEMPF*1000), "-", INT(TSTEP*1000)
  200  FORMAT(A5,I0.3,A6,I4,A1,I4,A1,I0.4)
 
+C WRITE PARAMETERS
       WRITE(*,*) "TEMPS: ", TEMPI, TEMPF, TSTEP, NTEMP
       WRITE(*,*) "SEEDS: ", SEED0, NSEED
       WRITE(*,*) "MCS: ", MCTOT, MCINI, MCD
@@ -71,6 +70,7 @@ C PBC VECTOR
       CALL CPU_TIME(TIMI)
       CALL FDATE(DATE)
 
+C OPEN OUTPUT FILE AND WRITE HEADER
       OPEN(UNIT=13, FILE=NOM//".res")
       WRITE(13,*) "#DATE ", DATE
       WRITE(13,*) "#L", L, "N", N
@@ -82,17 +82,21 @@ C PBC VECTOR
       WRITE(13,*) "#L TEMP SUM SUME SUME2 VARE SUMM SUMAM SUMM2 VARM"
       PRINT*, "======================================"
 
-      DO ITEMP=0,NTEMP-1,1 !#####################INICI BUCLE TEMPERAT
+C =============================================== TEMPERATURE LOOP ====
+      DO ITEMP=0,NTEMP-1,1
       CALL CPU_TIME(TIM1)
+
+C COMPUTE AND WRITE CURRENT TEMPERATURE
       TEMP = TEMPI+ITEMP*TSTEP
       WRITE(*,*) "TEMPERATURE = ", TEMP
 
-C W VECTOR
+C W VECTOR. CONTROLS THE PROBABILITY OF ACCEPTING A SPIN CHANGE THAT
+C INVOLVES AN INCREASE IN ENERGY
       DO I=-8,8 
             W(I) = DEXP(-DBLE(I)/TEMP)
       ENDDO
 
-C COUNTERS
+C COUNTERS INITIALIZED FOR EACH TEMPERATURE
       SUM = 0.D0
       SUME = 0.D0
       SUME2 = 0.D0
@@ -100,9 +104,8 @@ C COUNTERS
       SUMM2 = 0.D0
       SUMAM = 0.D0
 
-
-      DO SEED = SEED0,SEED0+NSEED-1,1 !###########INICI BUCLE LLAVORS
-      !WRITE(*,*) 'LLAVOR = ', SEED
+C =============================================== SEED LOOP ===========
+      DO SEED = SEED0,SEED0+NSEED-1,1
 
       CALL INIT_GENRAND(SEED)
 
@@ -119,25 +122,37 @@ C INITIAL STATE (RANDOM)
       ENE = ENERG(S,L,PBC)
 
       IMC = 0
+C UNCOMMENT TO WRITE EVOLUTION
+!      MAG = MAGNE(S,L)
 !      OPEN(UNIT=11,FILE=NOM//".evo")
 !      WRITE(11,*) "# L", L, "TEMP", TEMP, "MCTOT", MCTOT, "SEED", SEED
-!      WRITE(11,*) IMC, ENE2(1), ENE2(1), MAGN(1)
+!      WRITE(11,*) IMC, ENE, MAGN(1)
 
-
-      DO IMC=1,MCTOT !#############################INICI BUCLE MONTEC.
-      DO IPAS=1,N !################################N PASSOS EN CADA IMC
-      !I = INT(GENRAND_REAL2()*L)+1
-      !J = INT(GENRAND_REAL2()*L)+1 !TO FURTHER OPTIMIZE
+C =============================================== MONTECARLO LOOP =====
+      DO IMC=1,MCTOT
+C =============================================== SINGLE STEP LOOP ====
+      DO IPAS=1,N
+C RANDOM K TO OBTAIN CELL NUMBER (0 TO N)
       K = INT(GENRAND_REAL2()*N)+1
+C I AND J CORRESPOND TO COLUMN AND ROW, RESPECTIVELY
       I = MOD(K-1,L) + 1
       J = (K-1)/L + 1
+C AN ALTERNATIVE WOULD BE NOT CALLING K, BUT INSTEAD:
+C     I = INT(GENRAND_REAL2()*L)+1
+C     J = INT(GENRAND_REAL2()*L)+1
 
+C COMPUTE SUM OF NEIGHBORHOOD AND CORREPSONDING ENERGY (DE) CORRESPON-
+C DING TO THE ENERGY INCREMENT THAT WOULD PRODUCE A SWAP OF THE
+C CORRESPONDING SPIN.
       NHOOD = S(I,PBC(J+1)) +S(I,PBC(J-1)) +S(PBC(I+1),J) +S(PBC(I-1),J)
       DE = 2*S(I,J)*NHOOD
 
+C METROPOLIS. IF THE ENERGY INCREMENT IS NEGATIVE, ACCEPT
       IF (DE.LE.0.D0) THEN
             S(I,J) = -S(I,J)
             ENE = ENE+DE
+C IF IT IS POSITIVE, ACCEPT WITH A DECREASING PROBABILITY CONTROLLED BY
+C THE TEMPERATURE (STORED IN VECTOR W)
       ELSE
             DELTA = GENRAND_REAL2()
             IF (DELTA.LE.W(INT(DE))) THEN
@@ -146,9 +161,10 @@ C INITIAL STATE (RANDOM)
             ENDIF
       ENDIF
 
-      ENDDO !#####################################N PASSOS REALITZATS
-      !ENEBIS = ENERG(S,L,PBC)
+      ENDDO
+C =============================================== SINGLE STEP LOOP (END)
 
+C UPDATE COUNTERS WHEN NECESSARY
       IF ((IMC.GT.MCINI).AND.(MCD*(IMC/MCD).EQ.IMC)) THEN
       MAG = MAGNE(S,L)
       SUM = SUM+1.D0
@@ -159,13 +175,21 @@ C INITIAL STATE (RANDOM)
       SUMM2 = SUMM2+MAG*MAG
       ENDIF
 
-!      WRITE(11,*) IMC, ENE, MAG
-      
-      ENDDO !#######################################FI BUCLE MONTEC.
+C UNCOMMET TO KEEP TRACK OF ENEBIS
+!     ENEBIS = ENERG(S,L,PBC)
 
-      ENDDO !#######################################FI BUCLE LLAVORS
+C UNCOMMENT TO WRITE EVOLUTION
+!     WRITE(11,*) IMC, ENE, MAG
+      
+      ENDDO
+C =============================================== MONTECARLO LOOP (END)
+      ENDDO
+C =============================================== SEED LOOP (END) =====
+
+C UNCOMMENT TO WRITE EVOLUTION
 !      CLOSE(11)
 
+C COMPUTE MEANS
       SUME = SUME/SUM
       SUME2 = SUME2/SUM
       SUMM = SUMM/SUM
@@ -174,6 +198,7 @@ C INITIAL STATE (RANDOM)
       VARE = SUME2-SUME*SUME
       VARM = SUMM2-SUMM*SUMM
 
+C PRINT MEANS AND CHRONO (SINGLE TEMPERATURE)
       WRITE(*,*) "PROMIG ENERGIES", SUME
       WRITE(*,*) "PROMIG ENERG**2", SUME2
       WRITE(*,*) "PROMIG MAGNETITZ", SUMM
@@ -184,20 +209,23 @@ C INITIAL STATE (RANDOM)
       WRITE(*,*) "TEMP CHRONO: ", TIM2-TIM1
 
       PRINT*, "======================================"
+
+C WRITE MEANS TO FILE (SINGLE TEMPERATURE)
       WRITE(13,*) L,TEMP,SUM,SUME,SUME2,VARE,SUMM,SUMAM,SUMM2,VARM
 
 
+      ENDDO
+C =============================================== TEMPERATURE LOOP (END)
 
-      ENDDO !#######################################FI BUCLE TEMPERAT
 
       CALL FDATE(DATE)
       CALL CPU_TIME(TIMF)
 
+C PRINT AND WRITE DATE AND CHRONO
       PRINT*, DATE
       PRINT*, "TOTAL CHRONO: ", TIMF-TIMI
       WRITE(13,*) "#DATE ", DATE
       WRITE(13,*) "#TOTAL CHRONO: ", TIMF-TIMI
-
 
       CLOSE(13)
 
@@ -205,53 +233,11 @@ C INITIAL STATE (RANDOM)
       END
 
 
-
-
-
-
-      SUBROUTINE PROPOSECHANGE(S,L,PBC,TEMP,IMC,OU)
-      IMPLICIT NONE
-      INTEGER*4 L,I,J,IMC,PBC(0:L+1)
-      INTEGER*2 S(1:L,1:L)
-      INTEGER*4 OU
-      REAL*8 GENRAND_REAL2, ENERG, MAGNE
-      REAL*8 SUMA, DELTA, TEMP, ENE, DE, ENEBIS
-      REAL*8 W(-8:8)
-
-      COMMON / VECS / W
-
-C     THIS CAN BE FURTHER OPTIMIZED WITH // AND MOD
-
-      RETURN
-      END SUBROUTINE
-
-      SUBROUTINE WRITECONFIG(S,L)
-      IMPLICIT NONE
-      INTEGER*4 L,I,J
-      INTEGER*2 S(1:L,1:L)
-      !CHARACTER(LEN=*) :: FILENAME
-
-      !FILENAME = TRIM(FILENAME)
-      !IF (FILENAME.EQ."") THEN
-      !      FILENAME = "Configuration"
-      !ENDIF
-
-      !OPEN(10,FILE=TRIM(FILENAME//".conf"))
-      OPEN(10,FILE="Configuration.conf")
-
-      DO I=1,L
-            DO J=1,L
-                  IF (S(I,J).EQ.1) THEN
-                        WRITE(10,101) I,J
-                  ENDIF
-            ENDDO
-      ENDDO
- 101  FORMAT(I5,1X,I5)
-
-      CLOSE(10)
-
-      END SUBROUTINE
-
+C FUNCTION MAGNE:
+C RETURNS THE MAGNETIZATION OF A SPIN MATRIX
+C INPUTS:
+C     - S: SQUARED SPIN MATRIX
+C     - L: SPIN MATRIX SIZE LENGTH
 
       FUNCTION MAGNE(S,L)
       IMPLICIT NONE
@@ -268,6 +254,13 @@ C     THIS CAN BE FURTHER OPTIMIZED WITH // AND MOD
       RETURN
       END FUNCTION
 
+
+C FUNCTION ENERG:
+C RETURNS THE ENERGY OF A SPIN MATRIX
+C INPUTS:
+C     - S: SQUARED SPIN MATRIX
+C     - L: SPIN MATRIX SIZE LENGTH
+C     - PBC: PERIODIC BOUNDARY CONDITIONS VECTOR
 
       FUNCTION ENERG(S,L,PBC)
       IMPLICIT NONE
@@ -289,9 +282,10 @@ C     THIS CAN BE FURTHER OPTIMIZED WITH // AND MOD
 
 
 
-c##############################################################################################
-c GIVEN SUBROUTINES
-c##############################################################################################
+C ######################################################################
+C GIVEN SUBROUTINES
+C SOURCE: UB VIRTUAL CAMPUS
+c ######################################################################
 c  A C-program for MT19937, with initialization improved 2002/1/26.
 c  Coded by Takuji Nishimura and Makoto Matsumoto.
 c
