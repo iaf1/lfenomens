@@ -3,7 +3,7 @@ C     FENOMENS COL-LECTIUS I TRANSICIONS DE FASE
 C     PRACTICA D'ORDINADOR
 C     TARDOR 2019-20
 C     UNIVERSITAT DE BARCELONA. FACULTAT DE FISICA.
-C ####################################################################@
+C #####################################################################
       
       PROGRAM MAIN
       IMPLICIT NONE
@@ -11,7 +11,7 @@ C ####################################################################@
       INTEGER*4 I, J, K, L, N, ITEMP, IPAS
       INTEGER*4 NSEED, SEED0, SEED
       INTEGER IOS
-      PARAMETER(L=120)
+      PARAMETER(L=60)
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
       INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
@@ -20,12 +20,12 @@ C ####################################################################@
       REAL*8 W(-8:8)
       REAL*8 NHOOD, DELTA, TEMP, ENE, DE, MAG, TEMPI, TEMPF, TSTEP
       REAL*8 SUM, SUME, SUME2, SUMM, SUMM2, SUMAM, VARE, VARM
-      CHARACTER*28 NOM
+      CHARACTER*19 NOM
       REAL*8 TIMI, TIMF, TIM1, TIM2, CTIME, MTIME, TTIME, RTIME
       CHARACTER*30 DATE
 
 C PARAMETERS VECTOR
-      NAMELIST /DADES/ NOM,TEMPI,NTEMP,TSTEP,NSEED,SEED0,MCTOT,MCINI,MCD
+      NAMELIST /DADES/ NOM,TEMPI,NTEMP,TSTEP,SEED0,MCTOT
       
       N = L*L
 
@@ -34,30 +34,21 @@ C DEFAULT PARAMETERS
       TEMPI = 1.5D0
       NTEMP = 12
       TSTEP = 0.25D0
-      NSEED = 1000
       SEED0 = 117654
       MCTOT = 10000
-      MCINI = 1000
-      MCD = 10
 
 C READ PARAMETERS FROM FILE
-      OPEN(12,FILE="MC2.dat")
+      OPEN(12,FILE="MC3.dat")
       READ(12,DADES,IOSTAT=IOS)
       CLOSE(12)
 
 C COMPUTE FINAL TEMPERATURE
       TEMPF = TEMPI+(NTEMP-1)*TSTEP
 
-C BUILD OUTPUT FILE NAME BASED ON L AND TEMPS (INITIAL, FINAL AND STEP)
-      WRITE(NOM,200) "MC-L-", L, "-TEMP-", INT(TEMPI*1000), "-"
-     +  , INT(TEMPF*1000), "-", INT(TSTEP*1000)
- 200  FORMAT(A5,I0.3,A6,I4,A1,I4,A1,I0.4)
-
 C WRITE PARAMETERS
       WRITE(*,*) "TEMPS: ", TEMPI, TEMPF, TSTEP, NTEMP
-      WRITE(*,*) "SEEDS: ", SEED0, NSEED
-      WRITE(*,*) "MCS: ", MCTOT, MCINI, MCD
-      WRITE(*,*) "NOM: ", NOM
+      WRITE(*,*) "SEEDS: ", SEED0
+      WRITE(*,*) "MCS: ", MCTOT
 
 
 C PBC VECTOR
@@ -69,28 +60,20 @@ C PBC VECTOR
 
       CALL CPU_TIME(TIMI)
       CALL FDATE(DATE)
-      TTIME = 0.D0
-
-C OPEN OUTPUT FILE AND WRITE HEADER
-      OPEN(UNIT=13, FILE=NOM//".res")
-      WRITE(13,*) "#DATE ", DATE
-      WRITE(13,*) "#L", L, "N", N
-      WRITE(13,*) "#TEMPS", TEMPI, TEMPF, TSTEP, NTEMP
-      WRITE(13,*) "#SEEDS", SEED0, NSEED
-      WRITE(13,*) "#MCS", MCTOT, MCINI, MCD
-      WRITE(13,*) "#NOM ", NOM
-      WRITE(13,*) "##########################################"
-      WRITE(13,*) "#L TEMP SUM SUME SUME2 VARE SUMM SUMAM SUMM2 VARM"
-      PRINT*, "======================================"
+      TTIME = 0
 
 C =============================================== TEMPERATURE LOOP ====
       DO ITEMP=0,NTEMP-1,1
       CALL CPU_TIME(TIM1)
 
+C BUILD OUTPUT FILE NAME BASED ON L AND TEMPS (INITIAL, FINAL AND STEP)
 C COMPUTE AND WRITE CURRENT TEMPERATURE
       TEMP = TEMPI+ITEMP*TSTEP
       WRITE(*,*) "TEMP. STEP ", ITEMP+1, " OUT OF ", NTEMP
       WRITE(*,*) "TEMPERATURE = ", TEMP
+      
+      WRITE(NOM,200) "SIM-L-", L, "-TEMP-", INT(TEMP*1000)
+ 200  FORMAT(A6,I0.3,A6,I4)
 
 C W VECTOR. CONTROLS THE PROBABILITY OF ACCEPTING A SPIN CHANGE THAT
 C INVOLVES AN INCREASE IN ENERGY
@@ -98,18 +81,7 @@ C INVOLVES AN INCREASE IN ENERGY
             W(I) = DEXP(-DBLE(I)/TEMP)
       ENDDO
 
-C COUNTERS INITIALIZED FOR EACH TEMPERATURE
-      SUM = 0.D0
-      SUME = 0.D0
-      SUME2 = 0.D0
-      SUMM = 0.D0
-      SUMM2 = 0.D0
-      SUMAM = 0.D0
-
-C =============================================== SEED LOOP ===========
-      DO SEED = SEED0,SEED0+NSEED-1,1
-
-      CALL INIT_GENRAND(SEED)
+      CALL INIT_GENRAND(SEED0)
 
 C INITIAL STATE (RANDOM)
       DO I=1,L
@@ -124,6 +96,11 @@ C INITIAL STATE (RANDOM)
       ENE = ENERG(S,L,PBC)
 
       IMC = 0
+
+      MAG = MAGNE(S,L)
+      OPEN(UNIT=11,FILE=NOM//".evo")
+      WRITE(11,*) "# L", L, "TEMP", TEMP, "MCTOT", MCTOT, "SEED", SEED
+      WRITE(11,*) IMC, ENE, MAG
 
 C =============================================== MONTECARLO LOOP =====
       DO IMC=1,MCTOT
@@ -158,44 +135,20 @@ C THE TEMPERATURE (STORED IN VECTOR W)
             ENDIF
       ENDIF
 
+C UNCOMMET TO KEEP TRACK OF ENEBIS
+!     ENEBIS = ENERG(S,L,PBC)
+      
       ENDDO
 C =============================================== SINGLE STEP LOOP (END)
 
-C UPDATE COUNTERS WHEN NECESSARY
-      IF ((IMC.GT.MCINI).AND.(MCD*(IMC/MCD).EQ.IMC)) THEN
       MAG = MAGNE(S,L)
-      SUM = SUM+1.D0
-      SUME = SUME+ENE
-      SUME2 = SUME2+ENE*ENE
-      SUMM = SUMM+MAG
-      SUMAM = SUMAM+ABS(MAG)
-      SUMM2 = SUMM2+MAG*MAG
-      ENDIF
+      WRITE(11,*) IMC, ENE, MAG
 
-C UNCOMMET TO KEEP TRACK OF ENEBIS
-!     ENEBIS = ENERG(S,L,PBC)
-
-      
       ENDDO
 C =============================================== MONTECARLO LOOP (END)
-      ENDDO
-C =============================================== SEED LOOP (END) =====
 
-C COMPUTE MEANS AND VARIANCES
-      SUME = SUME/SUM
-      SUME2 = SUME2/SUM
-      SUMM = SUMM/SUM
-      SUMAM = SUMAM/SUM
-      SUMM2 = SUMM2/SUM
-      VARE = SUME2-SUME*SUME
-      VARM = SUMM2-SUMM*SUMM
-
-C PRINT MEANS AND CHRONO (SINGLE TEMPERATURE)
-      !WRITE(*,*) "PROMIG ENERGIES", SUME
-      !WRITE(*,*) "PROMIG ENERG**2", SUME2
-      !WRITE(*,*) "PROMIG MAGNETITZ", SUMM
-      !WRITE(*,*) "PROMIG MAGNET**2", SUMM2
-      !WRITE(*,*) "PROMIG ABS(MAGNE)", SUMAM
+C UNCOMMENT TO WRITE EVOLUTION
+!      CLOSE(11)
 
 C COMPUTE AND WRITE CURRENT, TOTAL, MEAN AND REMAINING TIMES
       CALL CPU_TIME(TIM2)
@@ -211,8 +164,20 @@ C COMPUTE AND WRITE CURRENT, TOTAL, MEAN AND REMAINING TIMES
      &      MOD(INT(RTIME)/60,60), "MIN", MOD(INT(RTIME),60), "S"
       PRINT*, "======================================"
 
-C WRITE MEANS TO FILE (SINGLE TEMPERATURE)
-      WRITE(13,*) L,TEMP,SUM,SUME,SUME2,VARE,SUMM,SUMAM,SUMM2,VARM
+
+      OPEN(10,FILE=NOM//".conf")
+
+      DO I=1,L
+            DO J=1,L
+                  IF (S(I,J).EQ.1) THEN
+                        WRITE(10,101) I,J
+                  ENDIF
+            ENDDO
+      ENDDO
+ 101  FORMAT(I5,1X,I5)
+
+      CLOSE(10)
+
 
 
       ENDDO

@@ -11,7 +11,7 @@ C ####################################################################@
       INTEGER*4 I, J, K, L, N, ITEMP, IPAS
       INTEGER*4 NSEED, SEED0, SEED
       INTEGER IOS
-      PARAMETER(L=120)
+      PARAMETER(L=75)
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
       INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
@@ -41,7 +41,7 @@ C DEFAULT PARAMETERS
       MCD = 10
 
 C READ PARAMETERS FROM FILE
-      OPEN(12,FILE="MC2.dat")
+      OPEN(12,FILE="MC2b.dat")
       READ(12,DADES,IOSTAT=IOS)
       CLOSE(12)
 
@@ -69,7 +69,6 @@ C PBC VECTOR
 
       CALL CPU_TIME(TIMI)
       CALL FDATE(DATE)
-      TTIME = 0.D0
 
 C OPEN OUTPUT FILE AND WRITE HEADER
       OPEN(UNIT=13, FILE=NOM//".res")
@@ -86,6 +85,7 @@ C OPEN OUTPUT FILE AND WRITE HEADER
 C =============================================== TEMPERATURE LOOP ====
       DO ITEMP=0,NTEMP-1,1
       CALL CPU_TIME(TIM1)
+      TTIME = 0
 
 C COMPUTE AND WRITE CURRENT TEMPERATURE
       TEMP = TEMPI+ITEMP*TSTEP
@@ -124,6 +124,11 @@ C INITIAL STATE (RANDOM)
       ENE = ENERG(S,L,PBC)
 
       IMC = 0
+C UNCOMMENT TO WRITE EVOLUTION
+!      MAG = MAGNE(S,L)
+!      OPEN(UNIT=11,FILE=NOM//".evo")
+!      WRITE(11,*) "# L", L, "TEMP", TEMP, "MCTOT", MCTOT, "SEED", SEED
+!      WRITE(11,*) IMC, ENE, MAGN(1)
 
 C =============================================== MONTECARLO LOOP =====
       DO IMC=1,MCTOT
@@ -175,11 +180,16 @@ C UPDATE COUNTERS WHEN NECESSARY
 C UNCOMMET TO KEEP TRACK OF ENEBIS
 !     ENEBIS = ENERG(S,L,PBC)
 
+C UNCOMMENT TO WRITE EVOLUTION
+!     WRITE(11,*) IMC, ENE, MAG
       
       ENDDO
 C =============================================== MONTECARLO LOOP (END)
       ENDDO
 C =============================================== SEED LOOP (END) =====
+
+C UNCOMMENT TO WRITE EVOLUTION
+!      CLOSE(11)
 
 C COMPUTE MEANS AND VARIANCES
       SUME = SUME/SUM
