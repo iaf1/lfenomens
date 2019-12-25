@@ -1,9 +1,14 @@
 set xzeroaxis
 set xrange[*:*]
 set yrange[*:*]
+set xtics 2000
+set ytics 0.2
+set mxtics 10
+set mytics 4
 
 set xlabel "MC Iteration"
 set ylabel "Energy/N"
+set key top right horizontal
 
 set term png
 set output "SIM-L-060-energy-EVO.png"
@@ -29,6 +34,7 @@ set ylabel "Magnetization/N"
 
 set term png
 set output "SIM-L-060-magnetiz-EVO.png"
+set key top right vertical
 
 plot \
 "SIM-L-060-TEMP-1500.evo" u ($1):($3/3600) w l t "T=1.5K", \
