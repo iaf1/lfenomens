@@ -213,12 +213,14 @@ C COMPUTE AND WRITE CURRENT, TOTAL, MEAN AND REMAINING TIMES
       TTIME = TTIME + CTIME
       MTIME = TTIME/(ITEMP+1)
       RTIME = NTEMP*MTIME - TTIME
+      CALL FDATE(DATE)
       WRITE(*,*) "TEMP CHRONO: ", INT(CTIME/3600), "H", 
      &      MOD(INT(CTIME)/60,60), "MIN", MOD(INT(CTIME),60), "S"
       WRITE(*,*) "TOTAL TIME: ", INT(TTIME/3600), "H", 
      &      MOD(INT(TTIME)/60,60), "MIN", MOD(INT(TTIME),60), "S"
       WRITE(*,*) "REMAINING: ", INT(RTIME/3600), "H", 
      &      MOD(INT(RTIME)/60,60), "MIN", MOD(INT(RTIME),60), "S"
+      WRITE(*,*) DATE
       PRINT*, "======================================"
 
 C WRITE MEANS TO FILE (SINGLE TEMPERATURE)
