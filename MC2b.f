@@ -11,7 +11,7 @@ C ####################################################################@
       INTEGER*4 I, J, K, L, N, ITEMP, IPAS
       INTEGER*4 NSEED, SEED0, SEED
       INTEGER IOS
-      PARAMETER(L=75)
+      PARAMETER(L=60)
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
       INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
@@ -69,6 +69,7 @@ C PBC VECTOR
 
       CALL CPU_TIME(TIMI)
       CALL FDATE(DATE)
+      TTIME = 0.D0
 
 C OPEN OUTPUT FILE AND WRITE HEADER
       OPEN(UNIT=13, FILE=NOM//".res")
@@ -85,7 +86,6 @@ C OPEN OUTPUT FILE AND WRITE HEADER
 C =============================================== TEMPERATURE LOOP ====
       DO ITEMP=0,NTEMP-1,1
       CALL CPU_TIME(TIM1)
-      TTIME = 0.D0
 
 C COMPUTE AND WRITE CURRENT TEMPERATURE
       TEMP = TEMPI+ITEMP*TSTEP

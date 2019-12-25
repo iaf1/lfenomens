@@ -11,7 +11,7 @@ C ####################################################################@
       INTEGER*4 I, J, K, L, N, ITEMP, IPAS
       INTEGER*4 NSEED, SEED0, SEED
       INTEGER IOS
-      PARAMETER(L=120)
+      PARAMETER(L=90)
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
       INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
