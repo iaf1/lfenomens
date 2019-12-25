@@ -1,5 +1,5 @@
 defaultL = 60
-defaultsymbsize = 1.2
+defaultsymbsize = .85
 if (!exists("L")){L = defaultL}
 if (!exists("symbsize")){symbsize = defaultsymbsize}
 #if (!exists("filename")){
