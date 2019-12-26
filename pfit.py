@@ -107,28 +107,32 @@ with open('MC-TOT.res','r') as f:
     clist.append(curcl)
     del curcl
 
-fitbounds = [(2.1,2.5), (2.15,2.45), (2.15,2.4), (2.15,2.4), (2.2,2.38), (2.25,2.35)]
-deg = 4
-exponents = [str(i) for i in range(deg,-1,-1)]
+fitbounds = [(2.2,2.5), (2.25,2.35), (2.25,2.35), (2.25,2.35), (2.25,2.35), (2.1,2.2), (2.25,2.31)]
+degs = dict(e=3,m=3,c=2,x=2)
+exponents = {el: [str(i) for i in range(degs[el],-1,-1)] for el in ['e','c','m','x']}
 with open('fits.txt','w') as f:
+    f.write('#Degs: '+str(degs)+'\n')
+    f.write('#Fitbounds: '+str(fitbounds)+'\n')
     for attr in ['e','c','m','x']:
         print(attr, [l.name for l in clist])
         for i in range(len(clist)):
             l = clist[i]
-            coefs = l.polyfit(attr,False,fitbounds[i][0], fitbounds[i][1], deg)
+            coefs = l.polyfit(attr,False,fitbounds[i][0], fitbounds[i][1], degs[attr])
             functxt = ''
-            for c in range(deg+1):
-                functxt += '{:+f}*x**{} '.format(coefs[c],exponents[c])
+            for c in range(degs[attr]+1):
+                functxt += '{:+f}*x**{} '.format(coefs[c],exponents[attr][c])
             f.write('f{}{}(x) = {}\n'.format(attr,l.name,functxt))
 
 llist = []
 tlist = []
+alist = []
 
 with open('tc.txt','r') as f:
     lines = f.readlines()
     ch = False
     xx = []
     yy = []
+    aa = []
     for l in lines:
         if '#' in l: continue
         if l == '\n':
@@ -136,17 +140,32 @@ with open('tc.txt','r') as f:
                 ch = False
                 llist.append(xx)
                 tlist.append(yy)
+                alist.append(aa)
+                aa = []
                 xx = []
                 yy = []
                 continue
             ch = True
             continue
         spl = l.replace('\n','').split(' ')
+        aa.append(spl[0])
         xx.append(float(spl[1]))
         yy.append(float(spl[2]))
     llist.append(xx)
     tlist.append(yy)
+    alist.append(aa)
 
 plt.figure()
-for ll, tt in zip(llist,tlist):
-    plt.plot((np.array(ll))**(-1), np.array(tt))
+coeflist = []
+with open('fits2.txt','w') as f:
+    for aa, ll, tt in zip(alist,llist,tlist):
+        l1 = 1/np.array(ll)
+        ans = np.polyfit(l1,tt,1,full=True)
+        coefs2 = ans[0]
+        coeflist.append(coefs2)
+        functxt = ''
+        for c in range(2):
+            functxt += '{:+f}*x**{} '.format(coefs2[c],['1','0'][c])
+        f.write('f{}(x) = {}\n'.format(aa[0],functxt))
+        plt.plot(np.array(ll)**(-1), np.array(tt), 'x')
+

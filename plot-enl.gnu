@@ -1,13 +1,13 @@
 #set terminal wxt
-set terminal png
+set terminal pngcairo enhanced font 'Verdana,10'
 
 file = "MC-TOT.res"
 
 displ(x) = ($0 == 0) ? (x0=x,1/0) : (dx=x-x0,x0=x,x-dx/2)
 der(x,y) = ($0 == 0) ? (x1=x,y1=y,1/0) : (x2=x1,x1=x,y2=y1,y1=y,(y1-y2)/(x1-x2))
 
-labels = "L=15 L=30 L=45 L=60 L=75 L=120"
-colors = "1 2 3 4 5 6"
+labels = "L=15 L=30 L=45 L=60 L=75 L=90 L=120"
+colors = "1 2 3 4 5 6 7"
 
 ############################################################################1
 set output "plot-e.png"
@@ -124,7 +124,7 @@ set xzeroaxis
 set xrange[1.5:3.5]
 set yrange[0:250]
 set xlabel "Reduced temperature T"
-set key top left
+set key top left horizontal
 set ylabel "Susceptibility per part."
 
 set xtics 0.2
