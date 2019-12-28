@@ -51,10 +51,12 @@ class ln:
         self.c = (np.array(self.vare))/((np.array(self.temp))**2*(np.array(self.l))**2)
         self.m = np.array(self.sumam)/(np.array(self.l))**2
         self.x = (np.array(self.summ2)-(np.array(self.sumam))**2)/((np.array(self.temp))*(np.array(self.l))**2)
+        
     def plot(self,name,ax=None):
         attr = getattr(self,name)
         ax = ax or plt.gca()
         plt.plot(self.temp, attr,'x')
+        
     def polyfit(self,name,show=False,lower=None,upper=None,deg=None):
         attr = getattr(self,name)
         if lower is None: lower = input('Lower bound: ')
@@ -77,6 +79,10 @@ class ln:
             xx = np.linspace(self.temp[0],self.temp[-1],1000)
             plt.plot(xx,polycoefs(xx,coefs))
         return coefs
+
+def maxprops(index):
+    global tlist, funlist
+    return [poly(t) for t,poly in zip(tlist[index], funlist[index])]
         
         
     
@@ -107,21 +113,34 @@ with open('MC-TOT.res','r') as f:
     clist.append(curcl)
     del curcl
 
-fitbounds = [(2.2,2.5), (2.25,2.35), (2.25,2.35), (2.25,2.35), (2.25,2.35), (2.1,2.2), (2.25,2.31)]
+fitbounds = [(2.25,2.5), (2.25,2.35), (2.25,2.35), (2.25,2.35), (2.27,2.31), (2.27,2.31), (2.26,2.31)]
 degs = dict(e=3,m=3,c=2,x=2)
 exponents = {el: [str(i) for i in range(degs[el],-1,-1)] for el in ['e','c','m','x']}
+funlist = []
 with open('fits.txt','w') as f:
-    f.write('#Degs: '+str(degs)+'\n')
-    f.write('#Fitbounds: '+str(fitbounds)+'\n')
-    for attr in ['e','c','m','x']:
-        print(attr, [l.name for l in clist])
-        for i in range(len(clist)):
-            l = clist[i]
-            coefs = l.polyfit(attr,False,fitbounds[i][0], fitbounds[i][1], degs[attr])
-            functxt = ''
-            for c in range(degs[attr]+1):
-                functxt += '{:+f}*x**{} '.format(coefs[c],exponents[attr][c])
-            f.write('f{}{}(x) = {}\n'.format(attr,l.name,functxt))
+    with open('wolfram.txt','w') as fw:
+        f.write('#Degs: '+str(degs)+'\n')
+        f.write('#Fitbounds: '+str(fitbounds)+'\n')
+        for attr in ['e','c','m','x']:
+            curfun =[]
+            fw.write('\n')
+            ls = [l.name for  l in clist]
+            print(attr, ls)
+            for i in range(len(clist)):
+                l = clist[i]
+                coefs = l.polyfit(attr,False,fitbounds[i][0], fitbounds[i][1], degs[attr])
+                curfun.append(np.poly1d(coefs))
+                functxt = ''
+#                funccol = ''
+                for c in range(degs[attr]+1):
+                    functxt += '{:+f}*x**{} '.format(coefs[c],exponents[attr][c])
+#                    funccol += '{:f} '.format(coefs[c])
+                f.write('f{}{}(x) = {}\n'.format(attr,l.name,functxt))
+#                f.write(funccol+'\n')
+                if attr in ['e','m']: fw.write('d²/dx²({}) = 0 solve for x\n'.format(functxt))
+                elif attr in ['c','x']: fw.write('d/dx({}) = 0 solve for x\n'.format(functxt))
+            funlist.append(curfun)
+                
 
 llist = []
 tlist = []
@@ -157,7 +176,7 @@ with open('tc.txt','r') as f:
 
 plt.figure()
 coeflist = []
-with open('fits2.txt','w') as f:
+with open('fits.txt','a') as f:
     for aa, ll, tt in zip(alist,llist,tlist):
         l1 = 1/np.array(ll)
         ans = np.polyfit(l1,tt,1,full=True)
@@ -168,4 +187,3 @@ with open('fits2.txt','w') as f:
             functxt += '{:+f}*x**{} '.format(coefs2[c],['1','0'][c])
         f.write('f{}(x) = {}\n'.format(aa[0],functxt))
         plt.plot(np.array(ll)**(-1), np.array(tt), 'x')
-

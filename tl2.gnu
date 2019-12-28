@@ -1,7 +1,7 @@
 set term pngcairo enhanced font 'verdana,10'
 
 file = "tc2.txt"
-load "fits2.txt"
+load "fits.txt"
 
 labels = "Tc (energy), Tc (heat cap.), Tc (magnetiz.), Tc (suscept.)"
 colors = "1 2 3 4"

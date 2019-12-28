@@ -1,5 +1,5 @@
 #set terminal wxt
-set terminal pngcairo enhanced font 'Verdana,10'
+set terminal pngcairo enhanced font 'Verdana,12'
 
 file = "MC-TOT.res"
 
@@ -16,7 +16,7 @@ set xzeroaxis
 set xrange[1.5:3.5]
 set yrange[*:*]
 set xlabel "Reduced temperature T"
-set key top left
+set key top left opaque
 set ylabel "Energy per particle"
 
 set xtics 0.2
@@ -39,6 +39,8 @@ unset key
 set tics scale 0.5 front
 set xtics 0.05 offset 0,0.5
 set ytics 0.1 offset 0.5,0
+set mxtics 5
+set mytics 5
 plot for[j=1:words(labels)] file i j-1 u 2:(($4)/$1**2) w p pt 1 lc word(colors,j) ps 0.7 t word(labels,j)
 
 unset multiplot
@@ -52,7 +54,7 @@ set xzeroaxis
 set xrange[1.5:3.5]
 set yrange[*:*]
 set xlabel "Reduced temperature T"
-set key top left
+set key top left opaque
 set ylabel "Heat capacity at const. vol. per part."
 
 set xtics 0.2
@@ -75,6 +77,8 @@ unset key
 set tics scale 0.5 front
 set xtics 0.1 offset 0,0.5
 set ytics 0.2 offset 0.5,0
+set mxtics 5
+set mytics 4
 plot for[j=1:words(labels)] file i j-1 u 2:(($5-$4**2)/($2**2*$1**2)) w p pt 1 lc word(colors,j) ps 0.7 t word(labels,j)
 
 unset multiplot
@@ -88,7 +92,7 @@ set xzeroaxis
 set xrange[1.5:3.5]
 set yrange[*:*]
 set xlabel "Reduced temperature T"
-set key bottom left
+set key bottom left opaque
 set ylabel "Magnetization per part."
 
 set xtics 0.2
@@ -111,6 +115,8 @@ unset key
 set tics scale 0.5 front
 set xtics 0.1 offset 0,0.5
 set ytics 0.2 offset 0.5,0
+set mxtics 5
+set mytics 4
 plot for[j=1:words(labels)] file i j-1 u 2:($8/$1**2) w p pt 1 lc word(colors,j) ps 0.7 t word(labels,j)
 
 unset multiplot
@@ -124,7 +130,7 @@ set xzeroaxis
 set xrange[1.5:3.5]
 set yrange[0:250]
 set xlabel "Reduced temperature T"
-set key top left horizontal
+set key top left horizontal opaque
 set ylabel "Susceptibility per part."
 
 set xtics 0.2
@@ -147,6 +153,8 @@ unset key
 set tics scale 0.5 front
 set xtics 0.1 offset 0,0.5
 set ytics 50 offset 0.5,0
+set mxtics 5
+set mytics 5
 plot for[j=1:words(labels)] file i j-1 u 2:(($9-$8**2)/($2*$1**2)) w p pt 1 lc word(colors,j) ps 0.7 t word(labels,j)
 
 unset multiplot
