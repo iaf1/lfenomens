@@ -10,7 +10,7 @@ set xlabel "MC Iteration"
 set ylabel "Energy/N"
 set key top right horizontal
 
-set term pngcairo enhanced font 'verdana,10'
+set term pngcairo enhanced font 'verdana,12'
 set output "SIM-L-060-energy-EVO.png"
 
 plot \
@@ -32,7 +32,7 @@ set yrange[*:*]
 
 set ylabel "Magnetization/N"
 
-set term pngcairo enhanced font 'verdana,10'
+set term pngcairo enhanced font 'verdana,12'
 set output "SIM-L-060-magnetiz-EVO.png"
 set key top right vertical
 

@@ -10,7 +10,7 @@ colors = "1 2 3 4"
 set encoding utf8
 
 ############################################################################1
-set term pngcairo enhanced font 'verdana,12'
+set term pngcairo enhanced font 'verdana,14'
 set output "coefs-tc.png"
 
 set xzeroaxis
@@ -35,7 +35,7 @@ replot
 pause -1 "Press ENTER"
 
 ############################################################################2
-set term pngcairo enhanced font 'verdana,12'
+set term pngcairo enhanced font 'verdana,14'
 set output "coefs-nu.png"
 
 set xzeroaxis
@@ -59,7 +59,7 @@ replot
 pause -1 "Press ENTER"
 
 ############################################################################3
-set term pngcairo enhanced font 'verdana,12'
+set term pngcairo enhanced font 'verdana,14'
 set output "coefs-gammanu.png"
 
 set xzeroaxis
@@ -78,7 +78,7 @@ replot
 pause -1 "Press ENTER"
 
 ############################################################################4
-set term pngcairo enhanced font 'verdana,12'
+set term pngcairo enhanced font 'verdana,14'
 set output "coefs-betanu.png"
 
 set xzeroaxis
@@ -97,7 +97,7 @@ replot
 pause -1 "Press ENTER"
 
 ############################################################################5
-set term pngcairo enhanced font 'verdana,12'
+set term pngcairo enhanced font 'verdana,14'
 set output "coefs-alphanu.png"
 
 set xzeroaxis

@@ -1,5 +1,5 @@
 #set terminal wxt
-set terminal pngcairo enhanced font 'Verdana,12'
+set terminal pngcairo enhanced font 'Verdana,14'
 
 file = "MC-TOT.res"
 

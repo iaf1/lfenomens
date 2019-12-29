@@ -1,5 +1,5 @@
 #set terminal wxt
-set terminal pngcairo enhanced font 'Verdana,12'
+set terminal pngcairo enhanced font 'Verdana,14'
 set encoding utf8
 
 file = "MC-TOT.res"
@@ -18,7 +18,7 @@ set output "fss-m.png"
 set xzeroaxis
 set xrange[-40:80]
 set yrange[0:1.8]
-set xlabel "L^{1/ν} (T-T_c)/T"
+set xlabel "L^{1/ν} (T-T_c)/T_c"
 set key bottom left opaque
 set ylabel "<|m_L|> L^{β/ν}"
 
@@ -56,9 +56,9 @@ set output "fss-x.png"
 set xzeroaxis
 set xrange[-40:80]
 set yrange[0:0.04]
-set xlabel "L^{1/ν} (T-T_c)/T"
+set xlabel "L^{1/ν} (T-T_c)/T_c"
 set key top left horizontal opaque
-set ylabel "χ_L L^{-γ/ν}"
+set ylabel "<χ_L> L^{-γ/ν}"
 
 set xtics 20
 set ytics 0.005

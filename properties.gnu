@@ -21,7 +21,7 @@ der(x,y) = ($0 == 0) ? (x1=x,y1=y,1/0) : (x2=x1,x1=x,y2=y1,y1=y,(y1-y2)/(x1-x2))
 ############################################################################
 set ylabel "Energy/N"
 
-set terminal pngcairo enhanced font 'verdana,12'
+set terminal pngcairo enhanced font 'verdana,14'
 set output outputname."_e.png"
 set key top left
 set ytics 0.2
@@ -37,7 +37,7 @@ pause -1 "Press ENTER"
 ############################################################################
 set ylabel "Magnetization/N"
     
-set terminal pngcairo enhanced font 'verdana,12'
+set terminal pngcairo enhanced font 'verdana,14'
 set output outputname."_m.png"
 set key top right
 set ytics 0.1
@@ -54,7 +54,7 @@ pause -1 "Press ENTER"
 ############################################################################
 set ylabel "Heat capacity at ct. V"
 
-set terminal pngcairo enhanced font 'verdana,12'
+set terminal pngcairo enhanced font 'verdana,14'
 set output outputname."_cv.png"
 set ytics 200
 unset mytics
@@ -69,7 +69,7 @@ pause -1 "Press ENTER"
 ############################################################################
 set ylabel "Heat capacity at ct. V per particle"
 
-set terminal pngcairo enhanced font 'verdana,12'
+set terminal pngcairo enhanced font 'verdana,14'
 set output outputname."_cvn.png"
 set ytics 0.2
 set mytics 4
@@ -88,7 +88,7 @@ pause -1 "Press ENTER"
 ############################################################################
 set ylabel "Susceptibility"
 
-set terminal pngcairo enhanced font 'verdana,12'
+set terminal pngcairo enhanced font 'verdana,14'
 set output outputname."_x.png"
 set ytics 2000
 unset mytics
@@ -103,7 +103,7 @@ pause -1 "Press ENTER"
 ############################################################################
 set ylabel "Susceptibility per particle"
 
-set terminal pngcairo enhanced font 'verdana,12'
+set terminal pngcairo enhanced font 'verdana,14'
 set output outputname."_xn.png"
 set ytics 2
 set mytics 4
