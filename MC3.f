@@ -14,7 +14,7 @@ C #####################################################################
       PARAMETER(L=60)
       INTEGER*4 PBC(0:L+1)
       INTEGER*2 S(1:L,1:L)
-      INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP
+      INTEGER*4 MCTOT, IMC, MCINI, MCD, NTEMP, CST
       REAL*8 GENRAND_REAL2, MAGNE
       REAL*8 ENERG,ENEBIS
       REAL*8 W(-8:8)
@@ -25,7 +25,7 @@ C #####################################################################
       CHARACTER*30 DATE
 
 C PARAMETERS VECTOR
-      NAMELIST /DADES/ NOM,TEMPI,NTEMP,TSTEP,SEED0,MCTOT
+      NAMELIST /DADES/ NOM,TEMPI,NTEMP,TSTEP,SEED0,MCTOT,CST
       
       N = L*L
 
@@ -36,6 +36,7 @@ C DEFAULT PARAMETERS
       TSTEP = 0.25D0
       SEED0 = 117654
       MCTOT = 10000
+      CST = 500
 
 C READ PARAMETERS FROM FILE
       OPEN(12,FILE="MC3.dat")
@@ -102,6 +103,14 @@ C INITIAL STATE (RANDOM)
       WRITE(11,*) "# L", L, "TEMP", TEMP, "MCTOT", MCTOT, "SEED", SEED
       WRITE(11,*) IMC, ENE, MAG
 
+      OPEN(UNIT=12,FILE=NOM//".cevo")
+      WRITE(12,*) "# IMC", IMC, "INDEX", 0
+      CALL WRITECONF(12,S,L)
+      WRITE(12,*)
+      WRITE(12,*)
+
+      
+
 C =============================================== MONTECARLO LOOP =====
       DO IMC=1,MCTOT
 C =============================================== SINGLE STEP LOOP ====
@@ -144,6 +153,13 @@ C =============================================== SINGLE STEP LOOP (END)
       MAG = MAGNE(S,L)
       WRITE(11,*) IMC, ENE, MAG
 
+      IF (MOD(IMC,CST).EQ.0) THEN
+      WRITE(12,*) "# IMC", IMC, "INDEX", IMC/CST
+      CALL WRITECONF(12,S,L)
+      WRITE(12,*)
+      WRITE(12,*)
+      ENDIF
+
       ENDDO
 C =============================================== MONTECARLO LOOP (END)
 
@@ -165,18 +181,10 @@ C COMPUTE AND WRITE CURRENT, TOTAL, MEAN AND REMAINING TIMES
       PRINT*, "======================================"
 
 
-      OPEN(10,FILE=NOM//".conf")
-
-      DO I=1,L
-            DO J=1,L
-                  IF (S(I,J).EQ.1) THEN
-                        WRITE(10,101) I,J
-                  ENDIF
-            ENDDO
-      ENDDO
- 101  FORMAT(I5,1X,I5)
-
+      OPEN(UNIT=10,FILE=NOM//".conf")
+      CALL WRITECONF(10,S,L)
       CLOSE(10)
+      CLOSE(12)
 
 
 
@@ -244,7 +252,20 @@ C     - PBC: PERIODIC BOUNDARY CONDITIONS VECTOR
       RETURN
       END FUNCTION
 
-
+      SUBROUTINE WRITECONF(OU,S,L)
+      IMPLICIT NONE
+      INTEGER*4 L
+      INTEGER*2 S(1:L,1:L)
+      INTEGER OU, I, J
+      DO I=1,L
+            DO J=1,L
+                  IF (S(I,J).EQ.1) THEN
+                        WRITE(OU,101) I,J
+                  ENDIF
+            ENDDO
+      ENDDO
+ 101  FORMAT(I5,1X,I5)
+      END SUBROUTINE
 
 
 

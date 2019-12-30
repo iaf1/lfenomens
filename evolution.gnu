@@ -1,7 +1,7 @@
 set xzeroaxis
-set xrange[*:*]
+set xrange[0:5000]
 set yrange[*:*]
-set xtics 2000
+set xtics 1000
 set ytics 0.2
 set mxtics 10
 set mytics 4
@@ -27,7 +27,7 @@ replot
 pause -1 "Press ENTER"
 
 set xzeroaxis
-set xrange[*:*]
+set xrange[0:5000]
 set yrange[*:*]
 
 set ylabel "Magnetization/N"
