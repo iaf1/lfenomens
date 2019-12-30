@@ -103,17 +103,17 @@ El treball que presentem estudia un sistema bidimensional d'$N$ partícules, dis
 \begin{equation*}
     F = U - TS
 \end{equation*}
-Per a fer-ho, pot minimitzar l'energia interna $U$ o bé maximitzar l'entropia $S$. Un sistema a baixa temperatura mostra el primer comportament, i es diu que està en la seva fase ordenada. Un sistema a alta temperatura, en canvi, té preferència pel segon, mostrant-se en la seva fase desordenada. El pas d'un comportament a l'altre constitueix una transició de fase i és el que estudiarem amb detall en el present treball tot descrivint meticulosament el comportament de les propietats termodinàmiques prop de la temperatura a què això té lloc, la temperatura crítica o de Curie ($T_c$).
+Per a fer-ho, pot minimitzar l'energia interna $U$ o bé maximitzar l'entropia $S$. Un sistema a baixa temperatura mostra el primer comportament, i es diu que està en la seva fase ordenada. Un sistema a alta temperatura, en canvi, té preferència pel segon, mostrant-se en la seva fase desordenada. El pas d'un comportament a l'altre constitueix una transició de fase i és el que estudiarem amb detall en el present treball tot descrivint el comportament de les propietats termodinàmiques prop de la temperatura a què això té lloc, la temperatura crítica o de Curie ($T_c$).
 
 Per a dur a terme aquest estudi, havent partit d'una configuració aleatòria d'spins, hem emprat l'algorisme de Metròpolis amb què, valent-se d'un gran nombre d'iteracions Montencarlo, s'han explorat les cadenes de Markov que descriuen el sistema. En cadascuna d'aquestes iteracions, s'han fet $N$ propostes de canvi d'spin, de manera aleatòria. Les propostes que suposen una disminució de l'energia s'accepten, i aquelles, en canvi que, suposen un augment de la mateixa, s'accepten amb probabilitat $\exp\left(-\Delta E^*/T^*\right)$. Això es tradueix en una penalització als canvis en spin que augmenten l'energia del sistema si l'increment es gran o si la temperatura a què es donen és baixa.
 
 Ha estat necessari repetir el procés per a un gran nombre de llavors (que al cap i a la fi, és la component determinista de la simulació) per tal d'explorar amb comoditat tot l'espai de configuracions. Duent el compte de les energies i les imantacions s'han fet les mitjanes amb què després s'han trobat les propietats termodinàmiques d'interès. El procés s'ha repetit per a valors de temperatura reduïda en un rang de 1.5 a 3.5, i per a sistemes de longitud $L=15,30,45,60,75,90,120$.
 
-Finalment, s'han fet servir les dades resultants per a explicar el comportament de l'energia, capacitat calorífica, magnetització i susceptibilitat monoparticulars del sistema.
+Amb les dades resultants s'han explicat el comportaments de l'energia, capacitat calorífica, magnetització i susceptibilitat monoparticulars del sistema, i se n'ha trobat la temperatura crítica. A més, ha estat possible una descripció del comportament d'aquestes propietats en el veïnatge de la mateixa.
 
 \section{Evolució de imantacions i temperatures}
 
-L'algorisme de Metropolis que tot just hem descrit s'ajusta a la naturalesa probabilística de les fluctuacions en l'energia i la imantació dels sistemes termodinàmics. És per aquest motiu que, tot i no haver definit una dinàmica pròpia del sistema, podem argumentar que les iteracions Montecarlo en la simulació donen una noció de l'evolució temporal d'un sistema que, partint d'una configuració inicial aleatòria (en el nostre cas, determinada per la seed que fem servir), es veuen sotmesos a una temperatura donada. Veiem l'evolució d'aquestes magnituds al llarg de les iteracions, per a diferents temperatures:
+L'algorisme de Metropolis que tot just hem descrit s'ajusta a la naturalesa probabilística de les fluctuacions en l'energia i la imantació dels sistemes termodinàmics. És per aquest motiu que, tot i no haver definit una dinàmica pròpia del sistema, podem argumentar que les iteracions Montecarlo en la simulació donen una noció de l'evolució temporal d'un sistema que, partint d'una configuració inicial aleatòria (en el nostre cas, determinada per la llavor que fem servir), es veu sotmès a una temperatura donada. Veiem l'evolució d'aquestes magnituds al llarg de les iteracions, per a diferents temperatures:
 
 
 \begin{figure}[H]
@@ -140,9 +140,8 @@ Tal com veiem a la figura \ref{fig:evo_ene}, per a temperatures baixes l'energia
 \end{equation*}
 en què $z$ és el nombre de coordinació ($z=4$) i on recordem, treballem en unitats reduïdes d'energia. A temperatures altes, en canvi, el sistema es troba en la fase desordenada i tendeix a maximitzar l'entropia. Això significa que, en promig, hi haurà molt poques partícules que tinguin veïnes orientades en el mateix sentit, provocant que l'energia per partícula sigui, en valor absolut, petita.
 
-Quant a la imantació, representada a la figura \ref{fig:evo_mag}, observem com per a temperatures baixes convergeix ràpidament a 1 o -1, ja que totes les partícules tendeixen a alinear-se en la mateixa direcció. El signe ve determinat per la pròpia evolució del sistema que en principi és aleatòria, però en el nostre cas està governada pel generador de nombres aleatoris i la seed que triem. Així com augmentem la temperatura el sistema tendeix a mantenir la imantació propera a zero, pel mateix motiu que esmentàvem abans: llevat de fluctuacions, aproximadament la meitat dels spins estan orientats cap amunt, i l'altra, cap avall, cancel·lant així la imantació mitjana.
 
-Així com augmentem les temperatures, es pot observar com hi ha una temperatura per la qual la imantació és altament fluctuant (en la figura \ref{fig:evo_mag}, $T^*=2.5$). La raó és que aquesta temperatura és molt propera a la temperatura crítica del sistema i, tal com estudiarem més endavant, les correlacions es fan de molt llarg abast, de tal manera que l'estabilitat de les propietats termodinàmiques del sistema es veuen compromeses.
+En augmentar les temperatures, es pot observar com hi ha una temperatura per la qual la imantació és altament fluctuant (en la figura \ref{fig:evo_mag}, $T^*=2.5$). La raó és que aquesta temperatura és molt propera a la temperatura crítica del sistema i, tal com estudiarem més endavant, les correlacions es fan de molt llarg abast, de tal manera que l'estabilitat de les propietats termodinàmiques del sistema es veuen compromeses.
 
 Presentem a continuació la configuració final del sistema després de 10 000 iteracions Montecarlo a temperatures alta i baixa, de forma que se'n posi de manifest la fase ordenada i desordenada, respectivament.
 
@@ -201,9 +200,9 @@ Les magnituds estudiades per a les diferents temperatures són l'energia, capaci
 
 Pel que fa a l'energia (figura \ref{fig:props-e}), podem veure clarament els comportaments asimptòtics comentats en l'apartat anterior: $\langle e \rangle \to -2$ quan $T^* \to 0$, i $\langle e \rangle \to 0$ quan $T^* \to \infty$, que caracteritzen les fases ordenada i desordenada, respectivament. El canvi de règim es dona a la temperatura crítica, on hi té lloc un punt d'inflexió.
 
-Quant a la magnetització (figura \ref{fig:props-m}), s'observa un fenomen molt similar, també presentat més amunt. Cal tenir en compte, però, que no podem representar $\langle m \rangle$, vist que com que $m$ pren valors positius i negatius amb igual probabilitat, serà sempre 0. En comptes d'això, podem mostrar $\langle |m| \rangle$ i $\sqrt{\langle m^2 \rangle}$, indistintament. Ambdós valors esperats tendeixen asimptòticament a 1 per a temperatures petites, i a 0 per a temperatures grans, també descrivint el règim ordenat i desordenat, separats per un punt d'inflexió.
+Quant a la magnetització (figura \ref{fig:props-m}), s'observa un fenomen molt similar, també presentat més amunt. Cal tenir en compte, però, que no podem representar $\langle m \rangle$, vist que com que $m$ pren valors positius i negatius amb igual probabilitat, serà sempre 0 com a conseqüència dels promitjos per a diferents llavors. En comptes d'això, podem mostrar $\langle |m| \rangle$ i $\sqrt{\langle m^2 \rangle}$, indistintament. Ambdós valors esperats tendeixen asimptòticament a 1 per a temperatures petites, i a 0 per a temperatures grans, també descrivint el règim ordenat i desordenat, separats per un punt d'inflexió.
 
-La capacitat calorífica (figura \ref{fig:props-cv}) és una propietat que en el límit termodinàmic té una divergència logarítmica al punt crític. En un sistema amb $L$ finita, però, presenta un màxim al punt crític. Pot calcular-se de dues maneres diferents, que presentem de manera complementària per a comprovar-ne l'equivalència.
+La capacitat calorífica (figura \ref{fig:props-cv}) és una propietat que en el límit termodinàmic té una divergència logarítmica al punt crític. En un sistema amb $L$ finita, però, presenta un màxim al punt crític. Pot calcular-se de dues maneres diferents, que presentem de manera complementària per a comprovar-ne l'equivalència:
 \begin{equation*}
     c_V = N \frac{\langle e^2 \rangle - \langle e \rangle^2}{{T^*}^2}, \qquad c_V = \dv{\langle e \rangle}{T^*}
 \end{equation*}
@@ -244,11 +243,11 @@ Un cop hem vist quin és el comportament de les propietats termodinàmiques per 
 \label{fig:plot}
 \end{figure}
 
-Un fet que es repeteix al llarg de la figura \ref{fig:plot} és que les característiques que són reflex de l'existència d'una temperatura crítica (punts d'inflexió i màxims) van desplaçant-se en consonància cap a temperatures més baixes així com augmenta $L$. A més, capacitat calorífica i susceptibilitat presenten pics més alts i estrets, fent palès el fet que al límit termodinàmic es produeix una divergència a $T_c$. Per altra banda, energia i imantació presenten transicions cada cop més abruptes.
+Un fet que es repeteix al llarg de la figura \ref{fig:plot} és que les característiques que són reflex de l'existència d'una temperatura crítica (punts d'inflexió i màxims) van desplaçant-se en consonància cap a temperatures més baixes així com augmenta $L$. A més, capacitat calorífica i susceptibilitat presenten pics més alts i estrets, fent palès el fet que al límit termodinàmic es produeix una divergència a $T_c$. Per altra banda, energia i imantació presenten transicions cada cop més pronunciades.
 
 \section{Temperatura crítica. Límit termodinàmic}
 
-Trobar la temperatura crítica del model significa trobar la temperatura en què es dona la transició de fase en el límit termodinàmic, situació de $N \to \infty$, en què els efectes de les vores queden completament eliminats i el sistema és completament \textit{bulk}. Com que no podem simular un sistema amb $N$ infinita, estudiarem de manera quantitativa quina és la variació de la temperatura crítica amb $L$ creixent per a cadascunes de les magnituds termodinàmiques estudiades, cosa que ja havíem fet de manera qualitativa. D'aquesta forma, n'extrapolarem el comportament a l'infinit.
+Trobar la temperatura crítica del model significa trobar la temperatura en què es dona la transició de fase en el límit termodinàmic, situació de $N \to \infty$, en què els efectes de les vores queden eliminats i el sistema és completament \textit{bulk}. Com que no podem simular un sistema amb $N$ infinita, estudiarem de manera quantitativa quina és la variació de la temperatura crítica amb $L$ creixent per a cadascunes de les magnituds termodinàmiques estudiades, cosa que ja havíem fet de manera qualitativa. D'aquesta forma, n'extrapolarem el comportament a l'infinit.
 
 Per a fer-ho, buscarem ajustos polinòmics als comportaments en les zones properes a $T_c$, d'ordre 3 en el cas de l'energia i la imantació, i d'ordre 2 en el cas de la capacitat calorífica i la susceptibilitat. D'aquesta forma, en podrem trobar numèricament els punt d'inflexió i els màxims, respectivament, que correspondran a les temperatures crítiques. Els ajustos es mostren a la figura \ref{fig:fit}, i les $T_c$ que se'n desprenen, a la taula \ref{tab:tcs}.
 
@@ -391,7 +390,7 @@ Prendrem com a valor final la mitjana dels resultats anteriors:
         \caption{Capacitat calorífica a volum constant}
         \label{fig:coefs-alphanu}
     \end{subfigure}
-    \caption{Logaritme de les diferents magnituds termodinàmiques per partícula contra el logaritme de la longitud del costat de la matriu d'spins, amb els corresponents ajustos lineals. La figura \ref{fig:coefs-nu} mostra la diferència de la temperatura crítica en $L$ amb la temperatura crítica per un sistema infinit, calculada de manera exacta i segons la mitjana d'extrapolacions amb les diferents magnituds termodinàmiques.}
+    \caption{Logaritme de les diferents magnituds termodinàmiques per partícula contra el logaritme de la longitud del costat de la matriu d'spins, amb els corresponents ajustos lineals. La figura \ref{fig:coefs-nu} mostra la diferència de la temperatura crítica en $L$, calculada per a cadascuna de les diferents magnituds termodinàmiques, amb la temperatura crítica per un sistema infinit calculada segons la mitjana d'extrapolacions amb les diferents magnituds termodinàmiques.}
 \label{fig:coefs}
 \end{figure}
 
@@ -437,7 +436,7 @@ $\alpha$ & 0.25 $\pm$ 0.02 & 0
 \label{tab:critexp}
 \end{table}
 
-Els valors de tots quatre coeficients descriuen el comportament de les seves respectives magnituds termodinàmiques en la zona propera al punt crític. Veiem que els resultats s'ajusten molt bé als valors teòrics pel que fa a $\nu$, $\gamma$ i $\beta$. No obstant, per $\alpha$ no és el cas. El valor teòric $\alpha=0$ és conseqüència que, en el límit termodinàmic, la divergència de la capacitat calorífica és logarítmica. No obstant, aquest resultat no pot obtenir-se amb el model que fem servir aquí, ja que això només podria ser conseqüència de que no hi hagués cap dependència de la capacitat calorífica amb la temperatura, cosa que és no certa per a $L$ finites.
+Els valors de tots quatre coeficients descriuen el comportament de les seves respectives magnituds termodinàmiques en la zona propera al punt crític. Veiem que els resultats s'ajusten molt bé als valors teòrics pel que fa a $\nu$, $\gamma$ i $\beta$. Per altra banda, per a $\alpha$ no és el cas. El valor teòric $\alpha=0$ és conseqüència que, en el límit termodinàmic, la divergència de la capacitat calorífica és logarítmica. No obstant, aquest resultat no pot obtenir-se amb el model que fem servir aquí, ja que això només podria ser conseqüència de que no hi hagués cap dependència de la capacitat calorífica amb la temperatura, cosa que és no certa per a $L$ finites.
 
 \section{Finite size scaling}
 
