@@ -4,7 +4,8 @@ coefs = "coefs.txt"
 load "fits.txt"
 load "fits2.txt"
 
-labels = "T_c^{ener} T_c^{h.cap} T_c^{magn} T_c^{susc}"
+labelst = "T_c^{ener} T_c^{h.cap} T_c^{magn} T_c^{susc}"
+labelsnu = "Energy H.cap. Magnet. Suscep."
 colors = "1 2 3 4"
 
 set encoding utf8
@@ -24,7 +25,7 @@ set xlabel "1/L"
 set key top left
 set ylabel "T_c"
 
-plot for[j=1:4] critt i j-1 u (1/$2):3 w p pt 1 lc word(colors,j) ps 1 t word(labels,j), \
+plot for[j=1:4] critt i j-1 u (1/$2):3 w p pt 1 lc word(colors,j) ps 1 t word(labelst,j), \
 fe(x) w l lc word(colors,1) t "", \
 fc(x) w l lc word(colors,2) t "", \
 fm(x) w l lc word(colors,3) t "", \
@@ -49,10 +50,11 @@ set xlabel "log L"
 set key top right
 set ylabel "log (T_{cL}-T_c)"
 
-plot coefs i 0 u (log($1)):(log($2-tc)):7 w yerrorbars pt 1 lc 1 ps 1 t "Exact T_c",\
-coefs i 0 u (log($1)):(log($2-tcm)):8 w yerrorbars pt 1 lc 2 ps 1 t "Mean T_c",\
-nu1(x) w l lc 1 t "",\
-nu2(x) w l lc 2 t ""
+plot for[j=1:4] coefs i j-1 u (log($1)):(log($2-tcm)) w p pt 1 lc word(colors,j) ps 1 t word(labelsnu,j), \
+nue(x) w l lc 1 t "",\
+nuc(x) w l lc 2 t "",\
+num(x) w l lc 3 t "",\
+nukhi(x) w l lc 4 t ""
 
 set term wxt
 replot
@@ -71,7 +73,7 @@ set xlabel "log L"
 set key top right
 set ylabel "log χ"
 
-plot coefs i 1 u 4:5 w p pt 1 lc 1 ps 1 t "",\
+plot coefs i 4 u 4:5 w p pt 1 lc 1 ps 1 t "",\
 gammanu(x) w l lc 1 t ""
 set term wxt
 replot
@@ -90,7 +92,7 @@ set xlabel "log L"
 set key top right
 set ylabel "log m"
 
-plot coefs i 2 u 4:5 w p pt 1 lc 1 ps 1 t "",\
+plot coefs i 5 u 4:5 w p pt 1 lc 1 ps 1 t "",\
 betanu(x) w l lc 1 t ""
 set term wxt
 replot
@@ -109,7 +111,7 @@ set xlabel "log L"
 set key top right
 set ylabel "log c_V"
 
-plot coefs i 3 u 4:5 w p pt 1 lc 1 ps 1 t "",\
+plot coefs i 6 u 4:5 w p pt 1 lc 1 ps 1 t "",\
 alphanu(x) w l lc 1 t ""
 
 set term wxt
