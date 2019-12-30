@@ -298,7 +298,7 @@ $\mathbf{L}$ & $\mathbf{T_c^e}$ & $\mathbf{T_c^{c_V}}$ & $\mathbf{T_c^m}$ & $\ma
 \label{tab:tcs}
 \end{table}
 
-Un cop tenim aquestes temperatures crítiques, en podem representar els comportaments amb l'invers de la longitud, per tal que l'ordenada a l'origen correspongui amb l'extrapolació al límit termodinàmic.
+Un cop tenim aquestes temperatures crítiques, en podem representar els comportaments amb l'invers de la longitud, per tal que l'ordenada a l'origen correspongui amb l'extrapolació al límit termodinàmic. No hi inclourem la temperatura crítica calculada en l'energia, ja que donat que la capacitat calorífica n'és la derivada, són formalment equivalents.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.6\textwidth]{coefs-tc.png}
@@ -308,7 +308,6 @@ Un cop tenim aquestes temperatures crítiques, en podem representar els comporta
 
 Com diem, els ajustos de la figura \ref{fig:tc},
 \begin{align*}
-    T_c^{e} &= (6.64 \pm 0.09)/L + (2.270 \pm 0.003) \\
     T_c^{c_V} &= (0.74 \pm 0.02)/L + (2.2694 \pm 0.0008) \\
     T_c^{m} &= (1.22 \pm 0.09)/L + (2.270 \pm 0.003) \\
     T_c^{\chi} &= (2.14 \pm 0.07)/L + (2.271 \pm 0.002)
@@ -346,22 +345,20 @@ Aleshores, n'hi haurà prou amb representar $\ln(T_{cL}-T_c)$ contra $\ln L$ i f
 
 Els ajustos trobats són els següents:
 \begin{align*}
-    \text{Energia:} &\quad \ln \left(T_{cL}^{e} - T_c\right) = (-0.90 \pm 0.12) \ln L + (-0.7 \pm 0.5) \\
     \text{Capacitat calorífica:} &\quad \ln \left(T_{cL}^{c_V} - T_c\right) = (-1.09 \pm 0.08) \ln L + (0.0 \pm 0.3) \\
     \text{Imantació:} &\quad \ln \left(T_{cL}^{m} - T_c\right) = (-1.01 \pm 0.11) \ln L + (0.2 \pm 0.4) \\
     \text{Susceptibilitat:} &\quad \ln \left(T_{cL}^{\chi} - T_c\right) = (-1.02 \pm 0.04) \ln L + (0.87 \pm 0.16) \\
 \end{align*}
 que condueixen a uns valors de $\nu$:
 \begin{align*}
-	\nu_e &= 1.11 \pm 0.15 \\
-	\nu_{c_V} &= 0.91 \pm 0.07 \\
-	\nu_m &= 0.98 \pm 0.10 \\
+	\nu_{c_V} &= 0.92 \pm 0.07 \\
+	\nu_m &= 0.99 \pm 0.10 \\
 	\nu_\chi &= 0.97 \pm 0.04
 \end{align*}
 
 Prendrem com a valor final la mitjana dels resultats anteriors:
 \begin{equation} \label{nu}
-    \nu = 1.00 \pm 0.08
+    \nu = 0.96 \pm 0.04
 \end{equation}
 
 \begin{figure}[H]
@@ -407,7 +404,7 @@ L'ajust de la figura \ref{fig:coefs-gammanu} resulta:
 
 Sabem que el pendent és $\gamma/\nu$. Per tant, tenint en compte el valor de $\nu$ que obteníem a \eqref{nu} i amb la propagació d'incerteses:
 \begin{equation*}
-	\gamma = 1.75 \pm 0.15
+	\gamma = 1.69 \pm 0.06
 \end{equation*}
 
 De manera completament anàloga amb la imantació i la capacitat calorífica, representats en les figures \ref{fig:coefs-betanu} i \ref{fig:coefs-alphanu}, obtenim uns ajustos
@@ -418,7 +415,7 @@ De manera completament anàloga amb la imantació i la capacitat calorífica, re
 
 que condueixen a uns coeficients
 \begin{equation*}
-	\beta = 0.14 \pm 0.02, \quad \alpha = 0.25 \pm 0.02
+	\beta = 0.14 \pm 0.02, \quad \alpha = 0.239 \pm 0.019
 \end{equation*}
 
 Comparem els resultats que hem obtingut amb els valors teòrics dels coeficients crítics:
@@ -427,16 +424,16 @@ Comparem els resultats que hem obtingut amb els valors teòrics dels coeficients
 \begin{tabular}{ccc}
 \hline
 \textbf{} & \textbf{Obtingut} & \textbf{Teòric} \\ \hline
-$\nu$ & 1.00 $\pm$ 0.08 & 1 \\
-$\gamma$ & 1.75 $\pm$ 0.15 & 1.75 \\
+$\nu$ & 0.96 $\pm$ 0.04 & 1 \\
+$\gamma$ & 1.69 $\pm$ 0.06 & 1.75 \\
 $\beta$ & 0.14 $\pm$ 0.02 & 0.125 \\
-$\alpha$ & 0.25 $\pm$ 0.02 & 0
+$\alpha$ & 0.239 $\pm$ 0.019 & 0
 \end{tabular}
 \caption{Comparació dels valors obtinguts pels exponents crítics amb els teòrics corresponents.}
 \label{tab:critexp}
 \end{table}
 
-Els valors de tots quatre coeficients descriuen el comportament de les seves respectives magnituds termodinàmiques en la zona propera al punt crític. Veiem que els resultats s'ajusten molt bé als valors teòrics pel que fa a $\nu$, $\gamma$ i $\beta$. Per altra banda, per a $\alpha$ no és el cas. El valor teòric $\alpha=0$ és conseqüència que, en el límit termodinàmic, la divergència de la capacitat calorífica és logarítmica. No obstant, aquest resultat no pot obtenir-se amb el model que fem servir aquí, ja que això només podria ser conseqüència de que no hi hagués cap dependència de la capacitat calorífica amb la temperatura, cosa que és no certa per a $L$ finites.
+Els valors de tots quatre coeficients descriuen el comportament de les seves respectives magnituds termodinàmiques en la zona propera al punt crític. Veiem que els resultats s'ajusten força bé als valors teòrics pel que fa a $\nu$, $\gamma$ i $\beta$. Per altra banda, per a $\alpha$ no és el cas. El valor teòric $\alpha=0$ és conseqüència que, en el límit termodinàmic, la divergència de la capacitat calorífica és logarítmica. No obstant, aquest resultat no pot obtenir-se amb el model que fem servir aquí, ja que això només podria ser conseqüència de que no hi hagués cap dependència de la capacitat calorífica amb la temperatura, cosa que és no certa per a $L$ finites.
 
 \section{Finite size scaling}
 
@@ -492,7 +489,7 @@ Al llarg del treball hem descrit quantitativament el comportament d'un sòlid pa
 
 Els resultats obtinguts,
 \begin{equation*}
-    T_c = 2.2704 \pm 0.0009, \qquad \nu = 1.00 \pm 0.08, \qquad \gamma = 1.75 \pm 0.15, \qquad \beta = 0.14 \pm 0.02
+    T_c = 2.2703 \pm 0.0011, \qquad \nu = 0.96 \pm 0.04, \qquad \gamma = 1.69 \pm 0.06, \qquad \beta = 0.14 \pm 0.02
 \end{equation*}
 Les petites discrepàncies i les incerteses han quedat sempre limitades pel rendiment de l'ordinador amb què les simulacions s'han dut a terme i el fet de disposar d'un temps de computació fitat. Això també pot apreciar-se a la figura \ref{fig:plot}, que presenta comportaments erràtics de les magnituds termodinàmiques a baixes temperatures per a $L$ altes. Tot i això, els resultats experimentals són prou bons, i en són prova el fet que en tots els casos les incerteses engloben els valors teòrics i la prova de \textit{finite size scaling}, on una transformació apropiada que involucra els propis valors obtinguts col·lapsa en una corba única prop del punt crític.
 

@@ -25,8 +25,10 @@ set xlabel "1/L"
 set key top left
 set ylabel "T_c"
 
-plot for[j=1:4] critt i j-1 u (1/$2):3 w p pt 1 lc word(colors,j) ps 1 t word(labelst,j), \
-fe(x) w l lc word(colors,1) t "", \
+#change to j=1:4 to include energy, then add fe
+#fe(x) w l lc word(colors,1) t "", \
+
+plot for[j=2:4] critt i j-1 u (1/$2):3 w p pt 1 lc word(colors,j) ps 1 t word(labelst,j), \
 fc(x) w l lc word(colors,2) t "", \
 fm(x) w l lc word(colors,3) t "", \
 fx(x) w l lc word(colors,4) t ""
@@ -50,8 +52,10 @@ set xlabel "log L"
 set key top right
 set ylabel "log (T_{cL}-T_c)"
 
-plot for[j=1:4] coefs i j-1 u (log($1)):(log($2-tcm)) w p pt 1 lc word(colors,j) ps 1 t word(labelsnu,j), \
-nue(x) w l lc 1 t "",\
+#change to j=1:4 to include energy, then add nue
+#nue(x) w l lc 1 t "",\
+
+plot for[j=2:4] coefs i j-1 u (log($1)):(log($2-tcm)) w p pt 1 lc word(colors,j) ps 1 t word(labelsnu,j), \
 nuc(x) w l lc 2 t "",\
 num(x) w l lc 3 t "",\
 nukhi(x) w l lc 4 t ""
